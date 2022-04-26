@@ -1,42 +1,82 @@
-setInterval(launchTime, 1000);
+function showTime() {
+    const time = new Date();
+    let hours = time.getHours();
+    const minutes = renderLeadingZero(time.getMinutes());
+    const seconds = renderLeadingZero(time.getSeconds());
+    const isAm = hours < 12 || hours === 0;
+    const amPm = isAm ? 'AM' : 'PM';
 
-function launchTime() {
-  let d = new Date();
-  var hours = ('0' + d.getHours() % 12).slice(-2);  
-  hours = hours ? hours : 12;
-
-  var time = (hours + ":" + ('0' + d.getMinutes()).slice(-2) + ":" + ('0' + d.getSeconds()).slice(-2) + " " + (d.getHours() >= 12 ? 'PM' : 'AM'));
-  document.getElementById("now").innerHTML = time;
+    document.getElementById('now').textContent = `${formatHour(
+        hours
+    )}:${minutes}:${seconds} ${amPm}`;
 }
 
-const today = new Date();
- 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-let day = days[today.getDay()];
+function renderLeadingZero(number) {
+    return number < 10 ? '0' + number : number;
+}
 
-const months = ["January", "February", "March", "April", "May", "June",
-                 "July", "August", "September", "October", "November", "December"];
-let month = months[today.getMonth()];
+function showDate() {
+    const today = new Date();
 
-let dayOf = today.getDate();
-let year = today.getFullYear();
+    const day = days[today.getDay()];
+    const date = appendDateSuffix(today.getDate());
+    const month = months[today.getMonth()];
+    const year = today.getFullYear();
 
-var current = document.getElementById("current");
-var date = (day + ", " + month + " " + dayOf + " " + year);  
-current.innerHTML = date;
+    document.getElementById(
+        'current'
+    ).textContent = `${day}, ${month} ${date}, ${year}`;
+}
+function formatHour(hour) {
+    hour = hour >= 13 ? hour - 12 : hour;
+    hour = hour === 0 ? hour + 12 : hour;
 
-/*
-function launchTime() {
-  let d = new Date();
-  var now = document.getElementById("now");
-  var hours = ('0' + d.getHours() % 12 || 12).slice(-2);
-  var seconds = ('0' + d.getSeconds()).slice(-2);
-  var ampm = (hours >= 12) ? 'p.m.' : 'a.m.';
-  
-  var time = (hours + ":" + ('0' + d.getMinutes()).slice(-2) + ":" + seconds + " " + ampm);
-      now.innerHTML = time;
+    return hour;
+}
+
+function appendDateSuffix(date) {
+    if (date < 10 || date > 20) {
+        switch (date % 10) {
+            case 1:
+                return `${date}st`;
+            case 2:
+                return `${date}nd`;
+            case 3:
+                return `${date}rd`;
+        }
     }
-*/
+    return `${date}th`;
+}
 
+const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+];
 
+const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
 
+showTime();
+showDate();
+
+setInterval(() => {
+    showTime();
+    showDate();
+}, 1000);
